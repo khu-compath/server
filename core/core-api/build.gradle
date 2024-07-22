@@ -1,0 +1,12 @@
+bootJar.enabled = true
+jar.enabled = false
+
+dependencies {
+    implementation project(":core:core-enum")
+    implementation project(":storage:db-core")
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.4'
+}

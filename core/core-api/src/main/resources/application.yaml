@@ -1,0 +1,15 @@
+spring.application.name: core-api
+spring.profiles.active: local
+spring:
+  config:
+    import:
+      - db-core.yaml
+      - application-secret.yaml
+  web.resources.add-mappings: false
+
+server:
+  tomcat:
+    max-connections: 20000
+    threads:
+      max: 600
+      min-spare: 100
