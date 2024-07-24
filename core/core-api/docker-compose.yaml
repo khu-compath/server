@@ -1,0 +1,7 @@
+name: compath
+
+services:
+  backend:
+    image: dhxl50/compath:test
+    ports:
+      - "80:8080"
