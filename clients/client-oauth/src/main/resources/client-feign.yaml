@@ -1,0 +1,31 @@
+kakao:
+  api:
+    url: https://kauth.kakao.com
+    exampleValue: exampleDefaultValue
+apple:
+  api:
+    url: https://appleid.apple.com
+
+spring.cloud.openfeign:
+  client:
+    config:
+      kakao-api:
+        url: https://kauth.kakao.com
+        connectTimeout: 2100
+        readTimeout: 5000
+        loggerLevel: full
+      apple-api:
+        url: https://appleid.apple.com
+        connectTimeout: 2100
+        readTimeout: 5000
+        loggerLevel: full
+
+  compression:
+    response:
+      enabled: false
+  httpclient:
+    max-connections: 2000
+    max-connections-per-route: 500
+
+---
+spring.config.activate.on-profile: local

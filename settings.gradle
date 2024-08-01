@@ -9,4 +9,5 @@ rootProject.name = 'compath'
 
 include 'core:core-api'
 include 'core:core-enum'
+include 'clients:client-oauth'
 include 'storage:db-core'

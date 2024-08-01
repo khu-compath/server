@@ -4,6 +4,7 @@ spring:
   config:
     import:
       - db-core.yaml
+      - client-feign.yaml
       - application-secret.yaml
   web.resources.add-mappings: false
 
@@ -13,3 +14,29 @@ server:
     threads:
       max: 600
       min-spare: 100
+---
+spring.config.activate.on-profile: local
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-expiry-seconds: ${ACCESS_EXPIRY_SECONDS}
+  refresh-expiry-seconds: ${REFRESH_EXPIRY_SECONDS}
+
+apple.auth:
+  service-id: ${APPLE_OAUTH_SERVICE_ID}
+  team-id: ${APPLE_OAUTH_TEAM_ID}
+  key-id: ${APPLE_OAUTH_KEY_ID}
+  private-key: ${APPLE_OAUTH_PRIVATE_KEY}
+---
+spring.config.activate.on-profile: dev
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-expiry-seconds: ${ACCESS_EXPIRY_SECONDS}
+  refresh-expiry-seconds: ${REFRESH_EXPIRY_SECONDS}
+
+apple.auth:
+  service-id: ${APPLE_OAUTH_SERVICE_ID}
+  team-id: ${APPLE_OAUTH_TEAM_ID}
+  key-id: ${APPLE_OAUTH_KEY_ID}
+  private-key: ${APPLE_OAUTH_PRIVATE_KEY}
