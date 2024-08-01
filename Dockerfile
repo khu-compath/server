@@ -1,6 +1,6 @@
 FROM amazoncorretto:17 AS builder
 WORKDIR application
-ARG JAR_FILE=./build/libs/core-api-0.0.1.jar
+ARG JAR_FILE=./core/core-api/build/libs/core-api-0.0.1.jar
 COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
