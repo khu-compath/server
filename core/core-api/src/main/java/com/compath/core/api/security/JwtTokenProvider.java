@@ -3,10 +3,8 @@ package com.compath.core.api.security;
 import static org.springframework.util.StringUtils.*;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
@@ -15,7 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -44,7 +43,7 @@ public class JwtTokenProvider {
 
 	// private final RedisKeyRepository redisKeyRepository;
 
-	public String createAccessToken(UserDetailsImpl userDetails) {
+	public String createAccessToken(UserDetails userDetails) {
 		Instant now = Instant.now();
 		Instant expirationTime = now.plusSeconds(accessExpirySeconds);
 
@@ -53,10 +52,8 @@ public class JwtTokenProvider {
 			.collect(Collectors.joining(","));
 
 		return Jwts.builder()
-			.subject((userDetails.getUsername()))
-			.claims(
-				Map.of("id", userDetails.getId(),
-					AUTHENTICATION_CLAIM_NAME, authorities))
+			.subject(userDetails.getUsername())
+			.claim(AUTHENTICATION_CLAIM_NAME, authorities)
 			.issuedAt(Date.from(now))
 			.expiration(Date.from(expirationTime))
 			.signWith(extractSecretKey())
@@ -79,20 +76,16 @@ public class JwtTokenProvider {
 
 		Collection<? extends GrantedAuthority> authorities = null;
 		if (claims.get(AUTHENTICATION_CLAIM_NAME) != null) {
-			authorities = Arrays.stream(claims.get(AUTHENTICATION_CLAIM_NAME)
-					.toString()
-					.split(","))
-				.map(SimpleGrantedAuthority::new)
-				.toList();
+			authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(
+				claims.get(AUTHENTICATION_CLAIM_NAME).toString());
 		}
 
 		UserDetailsImpl principal = UserDetailsImpl.builder()
-			.id(claims.get("id", Long.class))
-			.email(claims.getSubject())
+			.id(Long.valueOf(claims.getSubject()))
 			.password(null)
 			.authorities(authorities)
 			.build();
-		return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+		return new UsernamePasswordAuthenticationToken(principal, null, authorities);
 	}
 
 	public String resolveToken(String bearerToken) {

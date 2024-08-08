@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class HttpResponseUtil {
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	public static void writeSuccessResponse(HttpServletResponse response, HttpStatus httpStatus, Object body)
 		throws IOException {
-		String responseBody = objectMapper.writeValueAsString(ApiResponse.success(body));
+		String responseBody = OBJECT_MAPPER.writeValueAsString(ApiResponse.success(body));
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setStatus(httpStatus.value());
 		response.setCharacterEncoding("UTF-8");
@@ -31,7 +31,7 @@ public class HttpResponseUtil {
 		IOException {
 		final ErrorType errorType = e.getErrorType();
 		final Object errorData = e.getData();
-		String responseBody = objectMapper.writeValueAsString(ApiResponse.error(errorType, errorData));
+		String responseBody = OBJECT_MAPPER.writeValueAsString(ApiResponse.error(errorType, errorData));
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setStatus(errorType.getStatus().value());
 		response.setCharacterEncoding("UTF-8");

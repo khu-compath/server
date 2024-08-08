@@ -25,14 +25,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+			.orElseThrow(() -> new UsernameNotFoundException("User not found with email	: " + email));
 
 		log.info(member.getEmail());
 		List<GrantedAuthority> authorities = getAuthorities(member);
 
 		return UserDetailsImpl.builder()
 			.id(member.getId())
-			.email(member.getEmail())
 			.password(member.getPassword())
 			.authorities(authorities)
 			.build();
@@ -40,7 +39,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 	private List<GrantedAuthority> getAuthorities(Member member) {
 		return member.getRole() != null ?
-			List.of(new SimpleGrantedAuthority(member.getRole().name()))
+			List.of(new SimpleGrantedAuthority(member.getRole().getValue()))
 			: List.of();
 	}
 }

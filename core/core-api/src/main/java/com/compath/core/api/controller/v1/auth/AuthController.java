@@ -3,12 +3,13 @@ package com.compath.core.api.controller.v1.auth;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.compath.core.api.controller.v1.auth.dto.AuthResponse;
-import com.compath.core.api.domain.auth.AuthService;
+import com.compath.core.api.controller.v1.auth.dto.LoginRequest;
+import com.compath.core.api.controller.v1.auth.dto.LoginResponse;
+import com.compath.core.api.domain.auth.OAuthService;
 import com.compath.core.api.support.error.ErrorType;
 import com.compath.core.api.support.response.ApiResponse;
 
@@ -18,17 +19,12 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthController {
-	private final AuthService authService;
+	private final OAuthService oAuthService;
 
-	@PostMapping("/login")
-	public ApiResponse<AuthResponse> testLogin(@RequestParam String email) {
-		AuthResponse response = authService.testLogin(email);
+	@PostMapping("/login/oauth")
+	public ApiResponse<LoginResponse> loginWithOAuth(@RequestBody LoginRequest request) {
+		LoginResponse response = oAuthService.login(request);
 		return ApiResponse.success(response);
-	}
-
-	@PostMapping("/login/oauth/apple")
-	public ApiResponse<AuthResponse> loginWithAppleOauth(@RequestParam String email) {
-		return null;
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)

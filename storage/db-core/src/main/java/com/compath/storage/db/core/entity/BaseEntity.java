@@ -26,5 +26,4 @@ public abstract class BaseEntity {
 	@UpdateTimestamp
 	@Column
 	private LocalDateTime updatedAt;
-	
 }

@@ -10,20 +10,16 @@ import lombok.Getter;
 
 @Getter
 public class UserDetailsImpl implements UserDetails {
-
 	private final Long id;
-	private final String email;
 	private final String password;
 	private final Collection<? extends GrantedAuthority> authorities;
 
 	@Builder
 	public UserDetailsImpl(
 		Long id,
-		String email,
 		String password,
 		Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
-		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
 	}
@@ -34,13 +30,13 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	@Override
-	public String getPassword() {
-		return password;
+	public String getUsername() {
+		return id.toString();
 	}
 
 	@Override
-	public String getUsername() {
-		return email;
+	public String getPassword() {
+		return password;
 	}
 
 	@Override
