@@ -23,7 +23,7 @@ public class AuthController {
 
 	@PostMapping("/login/oauth")
 	public ApiResponse<LoginResponse> loginWithOAuth(@RequestBody LoginRequest request) {
-		LoginResponse response = authService.oauthLogin(request);
+		LoginResponse response = authService.oAuthLogin(request);
 		return ApiResponse.success(response);
 	}
 

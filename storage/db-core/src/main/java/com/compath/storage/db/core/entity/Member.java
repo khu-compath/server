@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -55,7 +56,10 @@ public class Member extends BaseEntity {
 	@Column(name = "role")
 	private Role role;
 
-	public Member(String socialId, String email) {
+	@Builder
+	public Member(String name, String nickname, String email, String socialId, SocialType socialType) {
+		this.name = name;
+		this.nickname = nickname;
 		this.socialId = socialId;
 		this.email = email;
 		this.role = Role.GUEST;

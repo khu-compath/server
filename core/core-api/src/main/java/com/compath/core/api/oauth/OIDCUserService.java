@@ -34,7 +34,7 @@ public class OIDCUserService {
 		// 알맞은 퍼블릭키 찾아와서 identityToken 파싱
 		PublicKey publicKey = OIDCPublicKeyProvider.getPublicKeyFromHeaders(headers, oidcPublicKeys);
 		Claims claims = OIDCJwtParser.parsePublicKeyAndGetClaims(identityToken, publicKey);
-		return OAuthMember.of(claims.getSubject(), claims.get("email", String.class));
+		return new OAuthMember(socialType, claims.getSubject(), claims.get("email", String.class));
 	}
 
 }
