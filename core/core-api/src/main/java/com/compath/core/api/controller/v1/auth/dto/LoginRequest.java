@@ -7,6 +7,6 @@ import com.hwi.core.enums.member.SocialType;
  */
 public record LoginRequest(
 	SocialType socialType,
-	String accessToken
+	String identityToken
 ) {
 }

@@ -1,4 +1,4 @@
-package com.compath.client.oauth.apple;
+package com.compath.core.api.oauth;
 
 import java.security.PublicKey;
 import java.util.Base64;
@@ -17,7 +17,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 
 @Component
-public class AppleJwtParser {
+public class OIDCJwtParser {
 	private static final String IDENTITY_TOKEN_VALUE_DELIMITER = "\\.";
 	private static final int HEADER_INDEX = 0;
 
@@ -41,9 +41,9 @@ public class AppleJwtParser {
 				.parseSignedClaims(idToken)
 				.getPayload();
 		} catch (ExpiredJwtException e) {
-			throw e; //test
+			throw new IllegalArgumentException("Expired or invalid JWT token");
 		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
-			throw e; //test
+			throw new IllegalArgumentException("Invalid JWT token");
 		}
 	}
 }

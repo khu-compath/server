@@ -1,4 +1,4 @@
-package com.compath.client.oauth.apple;
+package com.compath.core.api.oauth;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -11,24 +11,23 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.compath.client.oauth.apple.dto.ApplePublicKey;
-import com.compath.client.oauth.apple.dto.ApplePublicKeys;
+import com.compath.client.oauth.client.dto.OIDCPublicKey;
+import com.compath.client.oauth.client.dto.OIDCPublicKeys;
 
 @Component
-public class PublicKeyGenerator {
+public class OIDCPublicKeyProvider {
 
 	private static final String SIGN_ALGORITHM_HEADER_KEY = "alg";
 	private static final String KEY_ID_HEADER_KEY = "kid";
 	private static final int POSITIVE_SIGN_NUMBER = 1;
 
-	public PublicKey generatePublicKey(Map<String, String> headers, ApplePublicKeys applePublicKeys) {
-		ApplePublicKey applePublicKey =
-			applePublicKeys.getMatchingKey(headers.get(SIGN_ALGORITHM_HEADER_KEY), headers.get(KEY_ID_HEADER_KEY));
-
-		return generatePublicKeyWithApplePublicKey(applePublicKey);
+	public PublicKey getPublicKeyFromHeaders(Map<String, String> headers, OIDCPublicKeys OIDCPublicKeys) {
+		OIDCPublicKey OIDCPublicKey =
+			OIDCPublicKeys.getMatchingKey(headers.get(SIGN_ALGORITHM_HEADER_KEY), headers.get(KEY_ID_HEADER_KEY));
+		return generatePublicKeyFromOIDCKey(OIDCPublicKey);
 	}
 
-	private PublicKey generatePublicKeyWithApplePublicKey(ApplePublicKey publicKey) {
+	private PublicKey generatePublicKeyFromOIDCKey(OIDCPublicKey publicKey) {
 		byte[] nBytes = Base64.getUrlDecoder().decode(publicKey.n());
 		byte[] eBytes = Base64.getUrlDecoder().decode(publicKey.e());
 
@@ -42,7 +41,6 @@ public class PublicKeyGenerator {
 			return keyFactory.generatePublic(publicKeySpec);
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException exception) {
 			throw new RuntimeException(exception); //test
-			// throw new Inter(CommonResponseStatus.FAIL_TO_MAKE_APPLE_PUBLIC_KEY);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.compath.client.oauth;
+package com.compath.core.api.oauth;
 
 public record OAuthMember(
 	String socialId,

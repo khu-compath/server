@@ -11,7 +11,7 @@ import com.compath.client.oauth.ClientOauthConfig;
 public class AppleOAuthUserProviderTest {
 
 	@Autowired
-	private AppleOAuthUserProvider appleOAuthUserProvider;
+	private com.compath.client.oauth.oidc.OIDCUserProvider OIDCUserProvider;
 
 	// @Test
 	// void 애플로그인_테스트() {

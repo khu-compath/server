@@ -24,7 +24,7 @@ public class ApiControllerAdvice {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
-		log.error("Exception: {} ", e.getCause(), e);
+		log.error("Exception: {} ", e.getMessage(), e);
 		return new ResponseEntity<>(ApiResponse.error(ErrorType.DEFAULT_ERROR), ErrorType.DEFAULT_ERROR.getStatus());
 	}
 
@@ -39,7 +39,7 @@ public class ApiControllerAdvice {
 	}
 
 	@ExceptionHandler({HttpMessageNotReadableException.class})
-	public ResponseEntity<ApiResponse<?>> handleAllException(HttpMessageNotReadableException e) {
+	public ResponseEntity<ApiResponse<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
 		log.error(">>>>> HttpRequest Parsing Error : ", e);
 		ErrorType errorType = ErrorType.BAD_REQUEST;
 		return ResponseEntity.status(errorType.getStatus()).body(ApiResponse.error(errorType, e.getMessage()));

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.compath.core.api.controller.v1.auth.dto.LoginRequest;
 import com.compath.core.api.controller.v1.auth.dto.LoginResponse;
-import com.compath.core.api.domain.auth.OAuthService;
+import com.compath.core.api.domain.auth.AuthService;
 import com.compath.core.api.support.error.ErrorType;
 import com.compath.core.api.support.response.ApiResponse;
 
@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthController {
-	private final OAuthService oAuthService;
+	private final AuthService authService;
 
 	@PostMapping("/login/oauth")
 	public ApiResponse<LoginResponse> loginWithOAuth(@RequestBody LoginRequest request) {
-		LoginResponse response = oAuthService.login(request);
+		LoginResponse response = authService.oauthLogin(request);
 		return ApiResponse.success(response);
 	}
 

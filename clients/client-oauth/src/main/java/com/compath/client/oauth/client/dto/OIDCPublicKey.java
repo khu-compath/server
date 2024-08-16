@@ -1,6 +1,6 @@
-package com.compath.client.oauth.apple.dto;
+package com.compath.client.oauth.client.dto;
 
-public record ApplePublicKey(
+public record OIDCPublicKey(
 	String kty,
 	String kid,
 	String use,

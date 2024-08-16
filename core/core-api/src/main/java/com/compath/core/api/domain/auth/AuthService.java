@@ -1,8 +1,6 @@
 package com.compath.core.api.domain.auth;
 
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,37 +9,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compath.core.api.controller.v1.auth.dto.LoginRequest;
 import com.compath.core.api.controller.v1.auth.dto.LoginResponse;
-import com.compath.core.api.domain.auth.strategy.AppleSocialLoginStrategy;
-import com.compath.core.api.domain.auth.strategy.KaKaoSocialLoginStrategy;
-import com.compath.core.api.domain.auth.strategy.SocialLoginStrategy;
+import com.compath.core.api.oauth.OAuthMember;
+import com.compath.core.api.oauth.OIDCUserService;
 import com.compath.core.api.security.JwtTokenProvider;
 import com.compath.core.api.security.UserDetailsImpl;
 import com.compath.storage.db.core.entity.Member;
+import com.compath.storage.db.core.entity.MemberRepository;
 import com.hwi.core.enums.member.SocialType;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class OAuthService {
-	private final AppleSocialLoginStrategy appleSocialLoginStrategy;
-	private final KaKaoSocialLoginStrategy kaKaoSocialLoginStrategy;
+public class AuthService {
+	private final OIDCUserService oidcUserService;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final MemberRepository memberRepository;
 
-	private Map<SocialType, SocialLoginStrategy> socialLoginStrategyMap;
-
-	@PostConstruct
-	public void init() {
-		socialLoginStrategyMap = new EnumMap<>(SocialType.class);
-		socialLoginStrategyMap.put(SocialType.APPLE, appleSocialLoginStrategy);
-		socialLoginStrategyMap.put(SocialType.KAKAO, kaKaoSocialLoginStrategy);
-	}
-
-	public LoginResponse login(LoginRequest request) {
-		SocialLoginStrategy strategy = socialLoginStrategyMap.get(request.socialType());
-		Member member = strategy.loginOrSignUp(request.accessToken());
+	public LoginResponse oauthLogin(LoginRequest request) {
+		Member member = loginOrSignUp(request.socialType(), request.identityToken());
 		UserDetails userDetails = UserDetailsImpl.builder()
 			.id(member.getId())
 			.password(member.getPassword())
@@ -51,4 +38,11 @@ public class OAuthService {
 		return LoginResponse.of(accessToken, null);
 	}
 
+	public Member loginOrSignUp(SocialType socialType, String identityToken) {
+		OAuthMember oAuthMember = oidcUserService.getOIDCMember(socialType, identityToken);
+		return memberRepository.findBySocialId(oAuthMember.socialId()).orElseGet(() -> {
+			Member newMember = new Member(oAuthMember.socialId(), oAuthMember.email());
+			return memberRepository.save(newMember);
+		});
+	}
 }
