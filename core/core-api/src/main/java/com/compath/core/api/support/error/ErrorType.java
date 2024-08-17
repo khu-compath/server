@@ -7,10 +7,7 @@ public enum ErrorType {
 	BAD_REQUEST(HttpStatus.BAD_REQUEST, ErrorCode.E400, "Bad Request", LogLevel.WARN),
 	UNAUTHORIZED(HttpStatus.UNAUTHORIZED, ErrorCode.E401, "Unauthorized", LogLevel.WARN),
 	FORBIDDEN(HttpStatus.FORBIDDEN, ErrorCode.E403, "Forbidden", LogLevel.WARN),
-
 	NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Not Found", LogLevel.WARN),
-	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Member Not Found", LogLevel.WARN),
-
 	DEFAULT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "An unexpected error has occurred.",
 		LogLevel.ERROR);
 

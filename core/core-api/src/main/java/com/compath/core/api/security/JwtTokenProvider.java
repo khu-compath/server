@@ -85,7 +85,8 @@ public class JwtTokenProvider {
 			.password(null)
 			.authorities(authorities)
 			.build();
-		return new UsernamePasswordAuthenticationToken(principal, null, authorities);
+		// TODO: 확인해보기
+		return new UsernamePasswordAuthenticationToken(Long.valueOf(claims.getSubject()), null, authorities);
 	}
 
 	public String resolveToken(String bearerToken) {
