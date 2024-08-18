@@ -56,7 +56,7 @@ public class SecurityConfig {
 
 	private RequestMatcher[] requestPermitAll() {
 		List<RequestMatcher> requestMatchers = List.of(
-			antMatcher("/v1/auth/login/oauth"),
+			antMatcher("/v1/auth/**"),
 			antMatcher("/actuator/**"),
 			antMatcher("/swagger-ui/**"),
 			antMatcher("/v3/api-docs/**")

@@ -20,7 +20,6 @@ spring:
     show-sql: true
     generate-ddl: true
     defer-datasource-initialization: true
-
   sql:
     init:
       mode: never
@@ -37,7 +36,9 @@ storage:
       pool-name: core-db-pool
       data-source-properties:
         rewriteBatchedStatements: true
-
+redis:
+  host: ${REDIS_HOST}
+  port: 6379
 ---
 spring.config.activate.on-profile: dev
 
@@ -61,3 +62,7 @@ storage:
       pool-name: core-db-pool
       data-source-properties:
         rewriteBatchedStatements: true
+        
+redis:
+  host: ${REDIS_HOST}
+  port: 6379

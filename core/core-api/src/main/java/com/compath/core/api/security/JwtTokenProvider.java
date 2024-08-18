@@ -17,6 +17,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.compath.storage.db.core.redis.RefreshTokenRepository;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -41,7 +43,13 @@ public class JwtTokenProvider {
 	@Value("${jwt.refresh-expiry-seconds}")
 	private int refreshExpirySeconds;
 
-	// private final RedisKeyRepository redisKeyRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
+
+	public TokenPair createToken(UserDetails userDetails) {
+		String accessToken = createAccessToken(userDetails);
+		String refreshToken = createRefreshToken();
+		return new TokenPair(accessToken, refreshToken);
+	}
 
 	public String createAccessToken(UserDetails userDetails) {
 		Instant now = Instant.now();
@@ -80,12 +88,12 @@ public class JwtTokenProvider {
 				claims.get(AUTHENTICATION_CLAIM_NAME).toString());
 		}
 
-		UserDetailsImpl principal = UserDetailsImpl.builder()
-			.id(Long.valueOf(claims.getSubject()))
-			.password(null)
-			.authorities(authorities)
-			.build();
 		// TODO: 확인해보기
+		// UserDetailsImpl principal = UserDetailsImpl.builder()
+		// 	.id(Long.valueOf(claims.getSubject()))
+		// 	.password(null)
+		// 	.authorities(authorities)
+		// 	.build();
 		return new UsernamePasswordAuthenticationToken(Long.valueOf(claims.getSubject()), null, authorities);
 	}
 

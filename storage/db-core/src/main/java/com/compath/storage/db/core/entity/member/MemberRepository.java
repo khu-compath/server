@@ -1,4 +1,4 @@
-package com.compath.storage.db.core.entity;
+package com.compath.storage.db.core.entity.member;
 
 import java.util.Optional;
 

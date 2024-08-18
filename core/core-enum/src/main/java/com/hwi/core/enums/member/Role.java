@@ -2,8 +2,7 @@ package com.hwi.core.enums.member;
 
 public enum Role {
 	ADMIN("ADMIN"),
-	USER("USER"),
-	GUEST("GUEST");
+	USER("USER");
 
 	private final String value;
 

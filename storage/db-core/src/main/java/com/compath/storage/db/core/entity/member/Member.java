@@ -1,5 +1,7 @@
-package com.compath.storage.db.core.entity;
+package com.compath.storage.db.core.entity.member;
 
+import com.compath.storage.db.core.entity.BaseEntity;
+import com.hwi.core.enums.member.MemberStatus;
 import com.hwi.core.enums.member.Role;
 import com.hwi.core.enums.member.SocialType;
 
@@ -18,42 +20,49 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "member")
 public class Member extends BaseEntity {
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "nickname")
+	@Column(name = "nickname", nullable = false)
 	private String nickname;
 
 	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "password")
-	private String password;
-
-	@Column(name = "university")
+	@Column(name = "university", nullable = false)
 	private String university;
 
-	@Column(name = "college")
+	@Column(name = "college", nullable = false)
 	private String college;
 
-	@Column(name = "department")
+	@Column(name = "department", nullable = false)
 	private String department;
 
 	@Column(name = "social_id", nullable = false, unique = true)
 	private String socialId;
 
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "social_type")
+	@Column(name = "social_type", nullable = false)
 	private SocialType socialType;
+
+	@Column(name = "profile_image_url")
+	private String profileImageUrl;
+
+	@Column(name = "student_card_image_url")
+	private String studentCardImageUrl;
+
+	@Column(name = "is_student_card_certificated")
+	private boolean isStudentCardCertificated;
 
 	@Column(name = "is_terms_agreed")
 	private boolean isTermsAgreed;
 
-	@Column(name = "is_certificated")
-	private boolean isCertificated;
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "status", nullable = false)
+	private MemberStatus status;
 
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "role")
+	@Column(name = "role", nullable = false)
 	private Role role;
 
 	@Builder
@@ -61,7 +70,9 @@ public class Member extends BaseEntity {
 		this.name = name;
 		this.nickname = nickname;
 		this.socialId = socialId;
+		this.socialType = socialType;
 		this.email = email;
-		this.role = Role.GUEST;
+		this.status = MemberStatus.ACTIVE;
+		this.role = Role.USER;
 	}
 }

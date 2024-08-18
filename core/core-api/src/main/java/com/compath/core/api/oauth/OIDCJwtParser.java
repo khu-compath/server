@@ -18,8 +18,8 @@ import io.jsonwebtoken.security.SignatureException;
 
 @Component
 public class OIDCJwtParser {
-	private static final String IDENTITY_TOKEN_VALUE_DELIMITER = "\\.";
 	private static final int HEADER_INDEX = 0;
+	private static final String IDENTITY_TOKEN_VALUE_DELIMITER = "\\.";
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -29,7 +29,7 @@ public class OIDCJwtParser {
 			String decodedHeader = new String(Base64.getUrlDecoder().decode(encodedHeader));
 			return OBJECT_MAPPER.readValue(decodedHeader, Map.class);
 		} catch (JsonProcessingException | ArrayIndexOutOfBoundsException e) {
-			throw new IllegalArgumentException(); //test
+			throw new IllegalArgumentException("Error parsing identity token: " + identityToken, e);
 		}
 	}
 

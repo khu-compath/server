@@ -3,18 +3,24 @@ package com.compath.core.api.domain.auth;
 import java.util.List;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compath.core.api.controller.v1.auth.dto.LoginRequest;
 import com.compath.core.api.controller.v1.auth.dto.LoginResponse;
-import com.compath.core.api.oauth.OAuthMember;
+import com.compath.core.api.controller.v1.auth.dto.SignUpRequest;
+import com.compath.core.api.domain.member.MemberWriter;
+import com.compath.core.api.oauth.OIDCInfo;
 import com.compath.core.api.oauth.OIDCUserService;
 import com.compath.core.api.security.JwtTokenProvider;
+import com.compath.core.api.security.TokenPair;
 import com.compath.core.api.security.UserDetailsImpl;
-import com.compath.storage.db.core.entity.Member;
-import com.compath.storage.db.core.entity.MemberRepository;
+import com.compath.core.api.support.error.CoreApiException;
+import com.compath.core.api.support.error.ErrorType;
+import com.compath.storage.db.core.entity.member.Member;
+import com.compath.storage.db.core.entity.member.MemberRepository;
+import com.compath.storage.db.core.redis.TemporaryMember;
+import com.compath.storage.db.core.redis.TemporaryMemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,30 +31,39 @@ public class AuthService {
 	private final OIDCUserService oidcUserService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberRepository memberRepository;
+	private final MemberWriter memberWriter;
+	private final TemporaryMemberRepository temporaryMemberRepository;
 
-	public LoginResponse oAuthLogin(LoginRequest request) {
-		Member member = loginOrSignUp(request);
-		UserDetails userDetails = UserDetailsImpl.builder()
-			.id(member.getId())
-			.password(member.getPassword())
-			.authorities(List.of(new SimpleGrantedAuthority(member.getRole().getValue())))
-			.build();
-		String accessToken = jwtTokenProvider.createAccessToken(userDetails);
-		return LoginResponse.of(accessToken, "refresh_token");
-	}
+	public LoginResponse loginWithOAuth(LoginRequest request) {
+		OIDCInfo OIDCInfo = oidcUserService.getOIDCInfo(request.socialType(), request.identityToken());
 
-	public Member loginOrSignUp(LoginRequest request) {
-		OAuthMember oAuthMember = oidcUserService.getOIDCMember(request.socialType(), request.identityToken());
-		return memberRepository.findBySocialId(oAuthMember.socialId()).orElseGet(() -> {
-			// 회원가입
-			Member newMember = Member.builder()
-				.name(request.name())
-				.nickname(request.nickname())
-				.email(oAuthMember.email())
-				.socialId(oAuthMember.socialId())
-				.socialType(oAuthMember.socialType())
-				.build();
-			return memberRepository.save(newMember);
+		Member member = memberRepository.findBySocialId(OIDCInfo.socialId()).orElseThrow(() -> {
+			temporaryMemberRepository.save(
+				new TemporaryMember(request.identityToken(), OIDCInfo.socialId(), OIDCInfo.socialType()));
+			return new CoreApiException(ErrorType.BAD_REQUEST, "회원가입이 필요한 유저입니다.");
 		});
+
+		TokenPair tokenPair = getTokenPair(member);
+		return LoginResponse.success(tokenPair.accessToken(), tokenPair.refreshToken());
 	}
+
+	public LoginResponse signUpWithOAuth(SignUpRequest request) {
+		TemporaryMember temporaryMember = temporaryMemberRepository.findById(request.identityToken())
+			.orElseThrow(() -> new CoreApiException(ErrorType.NOT_FOUND, "회원가입 시간이 만료되었습니다. 다시 시도해주세요."));
+
+		Member member = memberWriter.signUp(request, temporaryMember);
+
+		TokenPair tokenPair = getTokenPair(member);
+		return LoginResponse.success(tokenPair.accessToken(), tokenPair.refreshToken());
+
+	}
+
+	private TokenPair getTokenPair(Member member) {
+		return jwtTokenProvider.createToken(
+			UserDetailsImpl.builder()
+				.id(member.getId())
+				.authorities(List.of(new SimpleGrantedAuthority(member.getRole().getValue())))
+				.build());
+	}
+
 }

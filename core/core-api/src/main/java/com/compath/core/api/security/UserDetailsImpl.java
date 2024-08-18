@@ -7,7 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public class UserDetailsImpl implements UserDetails {
 	private final Long id;
@@ -17,10 +19,9 @@ public class UserDetailsImpl implements UserDetails {
 	@Builder
 	public UserDetailsImpl(
 		Long id,
-		String password,
 		Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
-		this.password = password;
+		this.password = null;
 		this.authorities = authorities;
 	}
 
@@ -36,6 +37,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public String getPassword() {
+		log.warn(">>>>> UserDetailsImpl password has been used!");
 		return password;
 	}
 

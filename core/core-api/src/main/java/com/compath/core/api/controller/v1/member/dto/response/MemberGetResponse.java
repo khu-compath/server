@@ -1,6 +1,6 @@
-package com.compath.core.api.controller.v1.member.dto;
+package com.compath.core.api.controller.v1.member.dto.response;
 
-import com.compath.storage.db.core.entity.Member;
+import com.compath.storage.db.core.entity.member.Member;
 
 public record MemberGetResponse(
 	Long memberId,

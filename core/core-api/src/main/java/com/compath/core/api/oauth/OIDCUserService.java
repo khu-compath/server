@@ -21,7 +21,7 @@ public class OIDCUserService {
 	private final OIDCJwtParser OIDCJwtParser;
 	private final OIDCPublicKeyProvider OIDCPublicKeyProvider;
 
-	public OAuthMember getOIDCMember(SocialType socialType, String identityToken) {
+	public OIDCInfo getOIDCInfo(SocialType socialType, String identityToken) {
 		Map<String, String> headers = OIDCJwtParser.parseHeaders(identityToken);
 
 		OIDCPublicKeys oidcPublicKeys = null;
@@ -34,7 +34,8 @@ public class OIDCUserService {
 		// 알맞은 퍼블릭키 찾아와서 identityToken 파싱
 		PublicKey publicKey = OIDCPublicKeyProvider.getPublicKeyFromHeaders(headers, oidcPublicKeys);
 		Claims claims = OIDCJwtParser.parsePublicKeyAndGetClaims(identityToken, publicKey);
-		return new OAuthMember(socialType, claims.getSubject(), claims.get("email", String.class));
+		//claims.get("email", String.class) -> email
+		return new OIDCInfo(socialType, claims.getSubject());
 	}
 
 }

@@ -11,11 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.compath.storage.db.core.entity.Member;
-import com.compath.storage.db.core.entity.MemberRepository;
+import com.compath.storage.db.core.entity.member.Member;
+import com.compath.storage.db.core.entity.member.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
+@Deprecated
 @Service
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
@@ -24,15 +25,15 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		log.info(">>>>>> UserDetailServiceImpl loadUserByUsername");
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new UsernameNotFoundException("User not found with email	: " + email));
 
-		log.info(member.getEmail());
 		List<GrantedAuthority> authorities = getAuthorities(member);
 
 		return UserDetailsImpl.builder()
 			.id(member.getId())
-			.password(member.getPassword())
+			// .password(member.getPassword())
 			.authorities(authorities)
 			.build();
 	}

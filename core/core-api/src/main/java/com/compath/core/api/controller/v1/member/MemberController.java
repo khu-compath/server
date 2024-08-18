@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.compath.core.api.controller.v1.member.dto.MemberGetResponse;
+import com.compath.core.api.controller.v1.member.dto.response.MemberGetResponse;
 import com.compath.core.api.domain.member.MemberCommandService;
 import com.compath.core.api.domain.member.MemberQueryService;
 import com.compath.core.api.support.response.ApiResponse;
