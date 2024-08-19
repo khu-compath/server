@@ -87,8 +87,7 @@ public class JwtTokenProvider {
 			authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(
 				claims.get(AUTHENTICATION_CLAIM_NAME).toString());
 		}
-
-		// TODO: 확인해보기
+		
 		// UserDetailsImpl principal = UserDetailsImpl.builder()
 		// 	.id(Long.valueOf(claims.getSubject()))
 		// 	.password(null)

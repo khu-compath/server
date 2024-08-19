@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 public record SignUpRequest(
 	@NotBlank
 	String identityToken,
-	String username,
 	String name,
 	String nickname,
 	String email,

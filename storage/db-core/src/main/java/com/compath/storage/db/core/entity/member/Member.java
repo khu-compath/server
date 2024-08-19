@@ -11,12 +11,15 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "member")
 public class Member extends BaseEntity {
@@ -57,22 +60,13 @@ public class Member extends BaseEntity {
 	@Column(name = "is_terms_agreed")
 	private boolean isTermsAgreed;
 
+	@Builder.Default
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	private MemberStatus status;
+	private MemberStatus status = MemberStatus.ACTIVE;
 
+	@Builder.Default
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "role", nullable = false)
-	private Role role;
-
-	@Builder
-	public Member(String name, String nickname, String email, String socialId, SocialType socialType) {
-		this.name = name;
-		this.nickname = nickname;
-		this.socialId = socialId;
-		this.socialType = socialType;
-		this.email = email;
-		this.status = MemberStatus.ACTIVE;
-		this.role = Role.USER;
-	}
+	private Role role = Role.USER;
 }
