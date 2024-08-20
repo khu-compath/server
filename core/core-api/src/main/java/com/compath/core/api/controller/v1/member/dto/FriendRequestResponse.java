@@ -1,20 +1,20 @@
 package com.compath.core.api.controller.v1.member.dto;
 
-import com.compath.storage.db.core.entity.member.FriendRequest;
-import com.hwi.core.enums.member.FriendRequestState;
+import com.compath.storage.db.core.entity.member.Friend;
+import com.hwi.core.enums.FriendState;
 
 public record FriendRequestResponse(
 	Long requestId,
 	Long senderId,
 	Long receiverId,
-	FriendRequestState friendRequestState
+	FriendState friendState
 ) {
-	public static FriendRequestResponse from(FriendRequest friendRequest) {
+	public static FriendRequestResponse from(Friend friend) {
 		return new FriendRequestResponse(
-			friendRequest.getId(),
-			friendRequest.getSender().getId(),
-			friendRequest.getReceiver().getId(),
-			friendRequest.getState()
+			friend.getId(),
+			friend.getSender().getId(),
+			friend.getReceiver().getId(),
+			friend.getState()
 		);
 	}
 }

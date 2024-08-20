@@ -1,7 +1,7 @@
 package com.compath.storage.db.core.entity.member;
 
 import com.compath.storage.db.core.entity.BaseEntity;
-import com.hwi.core.enums.member.FriendRequestState;
+import com.hwi.core.enums.FriendState;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "friend_request")
-public class FriendRequest extends BaseEntity {
+@Table(name = "friend")
+public class Friend extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sender_id")
 	private Member sender;
@@ -34,14 +34,14 @@ public class FriendRequest extends BaseEntity {
 
 	@Builder.Default
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "friend_request_state")
-	private FriendRequestState state = FriendRequestState.PENDING;
+	@Column(name = "friend_state")
+	private FriendState state = FriendState.PENDING;
 
 	public void accept() {
-		this.state = FriendRequestState.ACCEPTED;
+		this.state = FriendState.ACCEPTED;
 	}
 
 	public void reject() {
-		this.state = FriendRequestState.REJECTED;
+		this.state = FriendState.REJECTED;
 	}
 }

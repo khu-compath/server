@@ -1,9 +1,9 @@
 package com.compath.storage.db.core.entity.member;
 
 import com.compath.storage.db.core.entity.BaseEntity;
-import com.hwi.core.enums.member.MemberStatus;
-import com.hwi.core.enums.member.Role;
-import com.hwi.core.enums.member.SocialType;
+import com.hwi.core.enums.MemberState;
+import com.hwi.core.enums.Role;
+import com.hwi.core.enums.SocialType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -62,8 +62,8 @@ public class Member extends BaseEntity {
 
 	@Builder.Default
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "status", nullable = false)
-	private MemberStatus status = MemberStatus.ACTIVE;
+	@Column(name = "state", nullable = false)
+	private MemberState state = MemberState.ACTIVE;
 
 	@Builder.Default
 	@Enumerated(value = EnumType.STRING)

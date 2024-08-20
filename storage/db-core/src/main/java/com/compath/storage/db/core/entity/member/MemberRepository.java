@@ -4,8 +4,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
-	Optional<Member> findBySocialId(String socialId);
+import com.hwi.core.enums.SocialType;
 
+public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByEmail(String email);
+
+	Optional<Member> findBySocialIdAndSocialType(String socialId, SocialType socialType);
 }

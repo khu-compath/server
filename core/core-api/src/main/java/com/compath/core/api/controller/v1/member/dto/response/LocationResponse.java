@@ -1,16 +1,14 @@
 package com.compath.core.api.controller.v1.member.dto.response;
 
-import com.compath.storage.db.core.entity.member.MemberLocation;
+import com.compath.storage.db.core.entity.location.Location;
 
 public record LocationResponse(
-	Long memberId,
 	double latitude,
 	double longitude
 ) {
-	public static LocationResponse of(MemberLocation memberLocation) {
+	public static LocationResponse of(Location location) {
 		return new LocationResponse(
-			memberLocation.getMemberId(),
-			memberLocation.getLatitude(),
-			memberLocation.getLongitude());
+			location.getLatitude(),
+			location.getLongitude());
 	}
 }

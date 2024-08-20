@@ -1,4 +1,4 @@
-package com.hwi.core.enums.member;
+package com.hwi.core.enums;
 
 public enum Role {
 	ADMIN("ADMIN"),

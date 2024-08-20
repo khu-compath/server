@@ -1,4 +1,4 @@
-package com.hwi.core.enums.member;
+package com.hwi.core.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

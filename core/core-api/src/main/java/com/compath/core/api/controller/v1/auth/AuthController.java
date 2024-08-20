@@ -25,7 +25,7 @@ public class AuthController {
 
 	@Operation(
 		summary = "로그인 API",
-		description = "소셜로그인 타입(KAKAO, APPLE)과 OIDC 토큰이 필요합니다. E400 에러가 반환될 경우 회원가입 화면으로 리다이렉트 부탁드립니다.")
+		description = "소셜로그인 타입(KAKAO, APPLE)과 OIDC 토큰이 필요합니다. E400 코드가 반환될 경우 회원가입으로 리다이렉트가 필요합니다.")
 	@PostMapping("/login")
 	public ApiResponse<LoginResponse> loginWithOAuth(@RequestBody LoginRequest request) {
 		LoginResponse response = authService.loginWithOAuth(request);
@@ -34,7 +34,7 @@ public class AuthController {
 
 	@Operation(
 		summary = "회원가입 API",
-		description = "로그인을 시도했던 OIDC 토큰이 반드시 필요합니다. 회원가입에 필요한 정보도 함께 전달해주세요.")
+		description = "소셜로그인 타입(KAKAO, APPLE)과 OIDC 토큰이 필요합니다. 회원가입에 필요한 정보도 함께 전달해주세요.")
 	@PostMapping("/signup")
 	public ApiResponse<LoginResponse> signUpWithOAuth(@Valid @RequestBody SignUpRequest request) {
 		LoginResponse response = authService.signUpWithOAuth(request);

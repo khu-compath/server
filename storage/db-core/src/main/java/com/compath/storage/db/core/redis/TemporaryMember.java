@@ -3,7 +3,7 @@ package com.compath.storage.db.core.redis;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import com.hwi.core.enums.member.SocialType;
+import com.hwi.core.enums.SocialType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
