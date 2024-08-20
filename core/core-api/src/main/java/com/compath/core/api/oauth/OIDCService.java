@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class OIDCUserService {
+public class OIDCService {
 	private final AppleOAuthClient appleClient;
 	private final KakaoOAuthClient kakaoClient;
 	private final OIDCJwtParser OIDCJwtParser;

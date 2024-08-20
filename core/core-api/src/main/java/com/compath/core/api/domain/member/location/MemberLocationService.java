@@ -21,11 +21,9 @@ public class MemberLocationService {
 	private final MemberLocationRepository memberLocationRepository;
 
 	public LocationResponse updateLocation(Long memberId, LocationUpdateRequest request) {
-		log.info("Updating location");
+		log.info(">>>>>> Updating location");
 		final MemberLocation location = findMemberLocation(memberId);
-		if (request != null) {
-			location.update(request.latitude(), request.longitude());
-		}
+		location.update(request.latitude(), request.longitude());
 		return LocationResponse.of(location);
 	}
 

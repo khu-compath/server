@@ -23,7 +23,7 @@ public class MemberLocationController {
 	private final MemberLocationService memberLocationService;
 
 	@Operation(summary = "본인 위치 정보 업데이트", description = "본인의 위치정보를 업데이트합니다. 위도와 경도 좌표가 필요합니다.")
-	@PostMapping("members/me/location")
+	@PostMapping("/members/me/location")
 	public ApiResponse<LocationResponse> updateLocation(
 		@CurrentMember Long memberId,
 		@RequestBody LocationUpdateRequest request) {

@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compath.core.api.controller.v1.auth.dto.LoginRequest;
 import com.compath.core.api.controller.v1.auth.dto.LoginResponse;
 import com.compath.core.api.controller.v1.auth.dto.SignUpRequest;
-import com.compath.core.api.domain.member.MemberWriter;
+import com.compath.core.api.domain.member.MemberManager;
 import com.compath.core.api.oauth.OIDCInfo;
-import com.compath.core.api.oauth.OIDCUserService;
+import com.compath.core.api.oauth.OIDCService;
 import com.compath.core.api.security.JwtTokenProvider;
 import com.compath.core.api.security.TokenPair;
 import com.compath.core.api.security.UserDetailsImpl;
@@ -28,14 +28,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 public class AuthService {
-	private final OIDCUserService oidcUserService;
+	private final OIDCService oidcService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberRepository memberRepository;
-	private final MemberWriter memberWriter;
+	private final MemberManager memberManager;
 	private final TemporaryMemberRepository temporaryMemberRepository;
 
 	public LoginResponse loginWithOAuth(LoginRequest request) {
-		OIDCInfo OIDCInfo = oidcUserService.getOIDCInfo(request.socialType(), request.identityToken());
+		// OAuthResult oAuthResult = oAuthService.loginWithOIDC());
+		// Member member = memberManager.findMember();
+		// TokenPair tokenPair = createTokenPair(member);
+
+		OIDCInfo OIDCInfo = oidcService.getOIDCInfo(request.socialType(), request.identityToken());
 
 		Member member = memberRepository.findBySocialId(OIDCInfo.socialId()).orElseThrow(() -> {
 			temporaryMemberRepository.save(
@@ -43,7 +47,7 @@ public class AuthService {
 			return new CoreApiException(ErrorType.BAD_REQUEST, "회원가입이 필요한 유저입니다.");
 		});
 
-		TokenPair tokenPair = getTokenPair(member);
+		TokenPair tokenPair = createTokenPair(member);
 		return LoginResponse.success(tokenPair.accessToken(), tokenPair.refreshToken());
 	}
 
@@ -51,14 +55,14 @@ public class AuthService {
 		TemporaryMember temporaryMember = temporaryMemberRepository.findById(request.identityToken())
 			.orElseThrow(() -> new CoreApiException(ErrorType.NOT_FOUND, "회원가입 시간이 만료되었습니다. 다시 시도해주세요."));
 
-		Member member = memberWriter.signUp(request, temporaryMember);
+		Member member = memberManager.signUp(request, temporaryMember);
 
-		TokenPair tokenPair = getTokenPair(member);
+		TokenPair tokenPair = createTokenPair(member);
 		return LoginResponse.success(tokenPair.accessToken(), tokenPair.refreshToken());
 
 	}
 
-	private TokenPair getTokenPair(Member member) {
+	private TokenPair createTokenPair(Member member) {
 		return jwtTokenProvider.createToken(
 			UserDetailsImpl.builder()
 				.id(member.getId())

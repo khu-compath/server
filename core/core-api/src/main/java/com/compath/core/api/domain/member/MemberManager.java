@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class MemberWriter {
+public class MemberManager {
 	private final MemberRepository memberRepository;
 	private final MemberLocationRepository memberLocationRepository;
 
@@ -25,6 +25,7 @@ public class MemberWriter {
 		if (!signUpRequest.isTermsAgreed()) {
 			throw new CoreApiException(ErrorType.BAD_REQUEST, "회원가입을 위해서 약관에 반드시 동의해야합니다.");
 		}
+
 		Member member = Member.builder()
 			.name(signUpRequest.name())
 			.nickname(signUpRequest.nickname())

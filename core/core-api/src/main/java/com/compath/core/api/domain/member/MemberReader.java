@@ -14,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 public class MemberReader {
 	private final MemberRepository memberRepository;
 
-	public Member findById(Long id) {
-		return memberRepository.findById(id)
+	public Member read(Long memberId) {
+		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new CoreApiException(ErrorType.NOT_FOUND, "Member not found"));
 	}
 }
