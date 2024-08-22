@@ -1,4 +1,4 @@
-package com.compath.storage.db.core.redis;
+package com.compath.storage.db.core.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,13 +21,4 @@ public class RedisConfig {
 	public RedisConnectionFactory redisConnectionFactory() {
 		return new LettuceConnectionFactory(host, port);
 	}
-
-	// @Bean
-	// RedisTemplate<String, Object> redisTemplate() {
-	// 	RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-	// 	redisTemplate.setKeySerializer(new StringRedisSerializer());
-	// 	redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-	// 	redisTemplate.setConnectionFactory(redisConnectionFactory());
-	// 	return redisTemplate;
-	// }
 }

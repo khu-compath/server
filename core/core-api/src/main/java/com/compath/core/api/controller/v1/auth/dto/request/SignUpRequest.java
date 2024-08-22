@@ -1,4 +1,4 @@
-package com.compath.core.api.controller.v1.auth.dto;
+package com.compath.core.api.controller.v1.auth.dto.request;
 
 import com.hwi.core.enums.SocialType;
 
