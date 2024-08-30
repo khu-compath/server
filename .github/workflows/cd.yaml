@@ -1,16 +1,18 @@
-name: CI/CD Pipeline
+name: CD
 
 on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
 
-env:
-  DOCKER_REPOSITORY: compath
-  APPLICATION_SECRET_PATH: ./core/core-api/src/main/resources
-
 permissions:
   contents: read
+
+# 배포 환경에 따라 변경
+env:
+  EC2_USERNAME: ec2-user
+  DOCKER_REPOSITORY: compath
+  APPLICATION_SECRET_PATH: ./core/core-api/src/main/resources
 
 jobs:
   deploy-with-docker:
@@ -37,9 +39,9 @@ jobs:
       # Create application-secret.yaml
       - name: Make application-secret.yaml
         run: |
-          mkdir -p $APPLICATION_SECRET_PATH
-          touch $APPLICATION_SECRET_PATH/application-secret.yaml
-          echo "${{ secrets.APPLICATION_SECRET }}" > $APPLICATION_SECRET_PATH/application-secret.yaml
+          mkdir -p ${{ env.APPLICATION_SECRET_PATH}}
+          touch ${{ env.APPLICATION_SECRET_PATH}}/application-secret.yaml
+          echo "${{ secrets.APPLICATION_SECRET }}" > ${{ env.APPLICATION_SECRET_PATH}}/application-secret.yaml
 
       # Grant execute permission for gradlew
       - name: Grant execute permission for gradlew
@@ -56,32 +58,32 @@ jobs:
           username: ${{ secrets.DOCKER_ID }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Docker build & Push
+      # Docker build & push
       - name: Docker build & Push
         run: |
           docker build -f Dockerfile -t ${{ secrets.DOCKER_ID }}/${{ env.DOCKER_REPOSITORY }} .
           docker push ${{ secrets.DOCKER_ID }}/${{ env.DOCKER_REPOSITORY }}
 
       # Send deploy.sh & docker-compose.yaml
-      - name: Send deploy.sh
+      - name: Send deploy scripts
         uses: appleboy/scp-action@master
         with:
-          username: ec2-user
+          username: ${{ env.EC2_USERNAME }}
           host: ${{ secrets.EC2_HOST }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           source: "./deploy/*"
-          target: "/home/ec2-user/"
+          target: "~"
 
       # Deploy to Dev
       - name: Deploy to Dev
         uses: appleboy/ssh-action@master
         with:
-          username: ec2-user
+          username: ${{ env.EC2_USERNAME }}
           host: ${{ secrets.EC2_HOST }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             cd deploy
             chmod 777 ./deploy.sh
             ./deploy.sh
-            docker image prune -f
+            docker image prune -af

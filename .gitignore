@@ -36,9 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-# Elastic Beanstalk Files
-**/.elasticbeanstalk/*
-**/!.elasticbeanstalk/*.cfg.yml
-**/!.elasticbeanstalk/*.global.yml
-
 *-secret.yaml
+**/.DS_Store

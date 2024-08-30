@@ -3,7 +3,7 @@ package com.compath.core.api.domain.member;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compath.core.api.controller.v1.auth.dto.SignUpRequest;
+import com.compath.core.api.controller.v1.auth.dto.request.SignUpRequest;
 import com.compath.core.api.support.error.CoreApiException;
 import com.compath.core.api.support.error.ErrorType;
 import com.compath.storage.db.core.entity.location.Location;
