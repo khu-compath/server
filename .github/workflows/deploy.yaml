@@ -5,7 +5,9 @@ on:
   push:
     branches: [ "main" ]
 
+# 배포 환경에 따라 변경
 env:
+  EC2_USERNAME: ec2-user
   DOCKER_REPOSITORY: compath
   APPLICATION_SECRET_PATH: ./core/core-api/src/main/resources
 
@@ -56,32 +58,32 @@ jobs:
           username: ${{ secrets.DOCKER_ID }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Docker build & Push
+      # Docker build & push
       - name: Docker build & Push
         run: |
-          docker build -f Dockerfile -t ${{ secrets.DOCKER_ID }}/${{ env.DOCKER_REPOSITORY }} .
-          docker push ${{ secrets.DOCKER_ID }}/${{ env.DOCKER_REPOSITORY }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_ID }}/$DOCKER_REPOSITORY .
+          docker push ${{ secrets.DOCKER_ID }}/$DOCKER_REPOSITORY
 
       # Send deploy.sh & docker-compose.yaml
-      - name: Send deploy.sh
+      - name: Send deploy scripts
         uses: appleboy/scp-action@master
         with:
-          username: ec2-user
+          username: $EC2_USERNAME
           host: ${{ secrets.EC2_HOST }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           source: "./deploy/*"
-          target: "/home/ec2-user/"
+          target: "~"
 
       # Deploy to Dev
       - name: Deploy to Dev
         uses: appleboy/ssh-action@master
         with:
-          username: ec2-user
+          username: $EC2_USERNAME
           host: ${{ secrets.EC2_HOST }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             cd deploy
             chmod 777 ./deploy.sh
             ./deploy.sh
-            docker image prune -f
+            docker system prune -af
