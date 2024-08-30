@@ -1,18 +1,18 @@
-name: CI/CD Pipeline
+name: CD
 
 on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 # 배포 환경에 따라 변경
 env:
   EC2_USERNAME: ec2-user
   DOCKER_REPOSITORY: compath
   APPLICATION_SECRET_PATH: ./core/core-api/src/main/resources
-
-permissions:
-  contents: read
 
 jobs:
   deploy-with-docker:
